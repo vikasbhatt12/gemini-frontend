@@ -2,7 +2,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import AuthPage from './pages/AuthPage';
-import OtpPage from './pages/OtpPage'; // 1. Import OtpPage
+import OtpPage from './pages/OtpPage'; // 
+import { DashboardPage } from './pages/DashboardPage'; 
 
 // 2. Create a placeholder Dashboard component for now
 function Dashboard() {
@@ -15,8 +16,8 @@ function App() {
       <Toaster position="top-center" reverseOrder={false} />
       <main className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-50 min-h-screen">
         <Routes>
-          {/* 3. Add the new routes */}
-          <Route path="/" element={<Dashboard />} />
+          
+          <Route path="/" element={<DashboardPage />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/otp" element={<OtpPage />} />
         </Routes>
