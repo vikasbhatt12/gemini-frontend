@@ -2,7 +2,7 @@
 
 A fully functional, responsive, and visually appealing frontend for a Gemini-style conversational AI chat application, built with React and Redux.
 
-**Live Link:** [**Deploy your project and add the link here!**]
+**[Live vercel Link](https://gemini-frontend-84v3.vercel.app/)**
 
 ## Features
 
