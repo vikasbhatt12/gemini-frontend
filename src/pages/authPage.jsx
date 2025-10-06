@@ -7,6 +7,8 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { CountrySelector } from '../components/common/CountrySelector';
 import countriesData from '../lib/countries.json';
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import toast from 'react-hot-toast'; // 2. Import toast
 
 // Map the imported data to the format our components expect
 const countries = countriesData.map(country => ({
@@ -23,6 +25,7 @@ const OTPSchema = z.object({
 const defaultCountry = countries.find(c => c.code === 'IN') || countries[0];
 
 function AuthPage() {
+  const navigate = useNavigate(); 
   const [formLoading, setFormLoading] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
 
@@ -37,6 +40,7 @@ function AuthPage() {
     }
 
     setFormLoading(true);
+    const fullPhoneNumber = `${selectedCountry.dialCode} ${data.phone}`;
     console.log("Form Data:", {
       dialCode: selectedCountry.dialCode,
       phone: data.phone,
@@ -44,6 +48,8 @@ function AuthPage() {
     
     setTimeout(() => {
       setFormLoading(false);
+      toast.success('OTP sent successfully!');
+      navigate('/auth/otp', { state: { fullPhoneNumber } });
       console.log("OTP Sent!");
     }, 2000);
   };
