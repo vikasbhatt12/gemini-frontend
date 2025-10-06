@@ -6,6 +6,8 @@ import { Toaster } from 'react-hot-toast';
 import AuthPage from './pages/AuthPage';
 import OtpPage from './pages/OtpPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+
 
 function App() {
   const { theme } = useSelector((state) => state.ui);
@@ -24,7 +26,10 @@ function App() {
       <Toaster position="top-center" reverseOrder={false} />
       <main className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-50 min-h-screen">
         <Routes>
-          <Route path="/" element={<DashboardPage />} />
+          <Route path="/" 
+                element={<ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/otp" element={<OtpPage />} />
         </Routes>

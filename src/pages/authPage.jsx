@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react'; 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Smartphone } from 'lucide-react';
@@ -25,6 +25,7 @@ const OTPSchema = z.object({
 const defaultCountry = countries.find(c => c.code === 'IN') || countries[0];
 
 function AuthPage() {
+  
   const navigate = useNavigate(); 
   const [formLoading, setFormLoading] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
@@ -32,6 +33,14 @@ function AuthPage() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(OTPSchema),
   });
+
+   useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   
   const onSubmit = (data) => {
     if (!selectedCountry) {

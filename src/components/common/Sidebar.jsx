@@ -33,7 +33,7 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-100 dark:bg-gray-800 p-3">
+    <div className="flex flex-col h-full bg-gray-100 dark:bg-gray-800 p-3 border-r dark:border-gray-700">
       <Button onClick={handleNewChat} className="flex items-center justify-center gap-2">
         <Plus size={20} /> New Chat
       </Button>
@@ -55,7 +55,15 @@ export function Sidebar() {
             <li
               key={room.id}
               onClick={() => dispatch(setActiveChatroom(room.id))}
-              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  dispatch(setActiveChatroom(room.id));
+                }
+              }}
+              role="button"
+              aria-label={`Select chat titled ${room.title}`}
+              className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 activeChatroomId === room.id
                   ? 'bg-blue-500 text-white'
                   : 'hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -67,6 +75,7 @@ export function Sidebar() {
               </div>
               <button
                 onClick={(e) => handleDeleteChat(e, room.id)}
+                aria-label={`Delete chat titled ${room.title}`}
                 className="p-1 rounded-md hover:bg-red-500/20 text-gray-500 hover:text-red-500 dark:text-gray-400"
               >
                 <Trash2 size={16} />

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Copy, Loader2 } from 'lucide-react';
 import { MessageInput } from './MessageInput';
 import { addMessage, loadOlderMessages } from '../../features/chat/chatSlice';
+import { Skeleton } from '../ui/Skeleton';
 
 const MESSAGES_PER_PAGE = 20;
 
@@ -51,7 +52,14 @@ export function ChatWindow({ chatroom }) {
   const scrollContainerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const [isLoadingOlder, setIsLoadingOlder] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => setIsLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, [chatroom.id]);
+
   const visibleMessages = useMemo(() => {
     const totalMessages = chatroom.messages.length;
     const end = totalMessages;
@@ -84,7 +92,6 @@ export function ChatWindow({ chatroom }) {
     const lastVisibleMessageId = visibleMessages[visibleMessages.length - 1]?.id;
     const lastTotalMessageId = chatroom.messages[chatroom.messages.length - 1]?.id;
     
-    // Only scroll to bottom if the last message is new
     if (lastVisibleMessageId === lastTotalMessageId) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
@@ -98,15 +105,35 @@ export function ChatWindow({ chatroom }) {
         setIsTyping(false);
         dispatch(addMessage({
           chatroomId: chatroom.id,
-          message: { type: 'text', content: 'This is a simulated AI response to your text.', sender: 'ai' },
+          message: { type: 'text', content: 'This is a simulated AI response.', sender: 'ai' },
         }));
       }, 1500);
       return () => clearTimeout(timer);
     }
   }, [chatroom.messages, chatroom.id, dispatch]);
+  
+  if (isLoading) {
+    return (
+      <div className="flex-1 p-6 space-y-6 overflow-hidden bg-white dark:bg-gray-900">
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[250px]" />
+            <Skeleton className="h-4 w-[200px]" />
+          </div>
+        </div>
+        <div className="flex items-center gap-3 justify-end">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[250px] ml-auto" />
+          </div>
+          <Skeleton className="h-10 w-10 rounded-full" />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-900">
       <div ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 p-6 space-y-4 overflow-y-auto">
         {isLoadingOlder && (
           <div className="flex justify-center my-4">
