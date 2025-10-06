@@ -1,6 +1,21 @@
 // src/features/chat/chatSlice.js
-import { createSlice } from '@reduxjs/toolkit'; // Correct import for createSlice
-import { nanoid } from 'nanoid';                 // Correct import for nanoid
+import { createSlice } from '@reduxjs/toolkit';
+import { nanoid } from 'nanoid';
+
+// Helper to generate a large set of dummy messages for demonstration
+const generateDummyMessages = () => {
+  let messages = [];
+  for (let i = 1; i <= 100; i++) {
+    messages.push({
+      id: nanoid(),
+      type: 'text',
+      content: `This is historical message number ${i}.`,
+      sender: i % 3 === 0 ? 'user' : 'ai',
+      timestamp: new Date(Date.now() - (100 - i) * 60000).toISOString(),
+    });
+  }
+  return messages;
+};
 
 const initialState = {
   chatrooms: [],
@@ -15,8 +30,9 @@ const chatSlice = createSlice({
       const newChatroom = {
         id: nanoid(),
         title: 'New Chat',
-        messages: [],
+        messages: generateDummyMessages(), // Pre-populate with dummy data
         createdAt: new Date().toISOString(),
+        messagesCurrentPage: 1, // Add pagination state
       };
       state.chatrooms.unshift(newChatroom);
       state.activeChatroomId = newChatroom.id;
@@ -39,10 +55,17 @@ const chatSlice = createSlice({
       if (chatroom) {
         chatroom.messages.push({
           id: nanoid(),
-          text: message.text,
-          sender: message.sender, // 'user' or 'ai'
+          type: message.type,
+          content: message.content,
+          sender: message.sender,
           timestamp: new Date().toISOString(),
         });
+      }
+    },
+    loadOlderMessages: (state, action) => {
+      const chatroom = state.chatrooms.find(room => room.id === action.payload);
+      if (chatroom) {
+        chatroom.messagesCurrentPage += 1;
       }
     },
   },
@@ -53,6 +76,7 @@ export const {
   deleteChatroom, 
   setActiveChatroom,
   addMessage,
+  loadOlderMessages, // Export the new action
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
