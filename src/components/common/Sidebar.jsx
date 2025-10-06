@@ -1,8 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Plus, Trash2, MessageSquare } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { createChatroom, deleteChatroom } from '../../features/chat/chatSlice';
+import { createChatroom, deleteChatroom, setActiveChatroom  } from '../../features/chat/chatSlice';
 import { Button } from '../ui/Button';
+import { ThemeToggle } from './ThemeToggle'; // Import ThemeToggle
+
 
 export function Sidebar() {
   const dispatch = useDispatch();
@@ -29,25 +31,22 @@ export function Sidebar() {
           {chatrooms.map((room) => (
             <li
               key={room.id}
+              // Add onClick to the list item
+              onClick={() => dispatch(setActiveChatroom(room.id))}
               className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
                 activeChatroomId === room.id
                   ? 'bg-blue-500 text-white'
                   : 'hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
             >
-              <div className="flex items-center gap-3 truncate">
-                <MessageSquare size={18} />
-                <span className="truncate">{room.title}</span>
-              </div>
-              <button
-                onClick={(e) => handleDeleteChat(e, room.id)}
-                className="p-1 rounded-md hover:bg-red-500/20 text-gray-500 hover:text-red-500 dark:text-gray-400"
-              >
-                <Trash2 size={16} />
-              </button>
+            {/* ... rest of the li content ... */}
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="mt-auto"> {/* This pushes the toggle to the bottom */}
+        <ThemeToggle />
       </div>
     </div>
   );

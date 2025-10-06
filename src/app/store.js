@@ -1,7 +1,8 @@
 // src/app/store.js
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
-import chatReducer from '../features/chat/chatSlice'; // 1. Import chatReducer
+import chatReducer from '../features/chat/chatSlice'; 
+import uiReducer from '../features/ui/uiSlice';
 
 // 2. Function to load state from localStorage
 const loadState = () => {
@@ -31,7 +32,8 @@ const preloadedState = loadState();
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    chat: chatReducer, // 4. Add chatReducer
+    chat: chatReducer,
+    ui: uiReducer,
   },
   preloadedState, // 5. Load pre-existing state
 });

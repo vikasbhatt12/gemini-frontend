@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from 'nanoid'; // A small library for generating unique IDs
+// src/features/chat/chatSlice.js
+import { createSlice } from '@reduxjs/toolkit'; // Correct import for createSlice
+import { nanoid } from 'nanoid';                 // Correct import for nanoid
 
 const initialState = {
   chatrooms: [],
@@ -10,10 +11,6 @@ const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    // Action to load initial state from localStorage
-    setInitialChatState: (state, action) => {
-      return action.payload;
-    },
     createChatroom: (state) => {
       const newChatroom = {
         id: nanoid(),
@@ -21,7 +18,7 @@ const chatSlice = createSlice({
         messages: [],
         createdAt: new Date().toISOString(),
       };
-      state.chatrooms.unshift(newChatroom); // Add to the beginning of the list
+      state.chatrooms.unshift(newChatroom);
       state.activeChatroomId = newChatroom.id;
     },
     deleteChatroom: (state, action) => {
@@ -33,9 +30,29 @@ const chatSlice = createSlice({
         state.activeChatroomId = state.chatrooms[0]?.id || null;
       }
     },
-    // We will add more actions like `addMessage` later
+    setActiveChatroom: (state, action) => {
+      state.activeChatroomId = action.payload;
+    },
+    addMessage: (state, action) => {
+      const { chatroomId, message } = action.payload;
+      const chatroom = state.chatrooms.find(room => room.id === chatroomId);
+      if (chatroom) {
+        chatroom.messages.push({
+          id: nanoid(),
+          text: message.text,
+          sender: message.sender, // 'user' or 'ai'
+          timestamp: new Date().toISOString(),
+        });
+      }
+    },
   },
 });
 
-export const { createChatroom, deleteChatroom, setInitialChatState } = chatSlice.actions;
+export const { 
+  createChatroom, 
+  deleteChatroom, 
+  setActiveChatroom,
+  addMessage,
+} = chatSlice.actions;
+
 export default chatSlice.reducer;
